@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>My Tasks</h1>
+
+  <form action="{{ url_for('main.create', filter=current) }}" method="post" class="add-form">
+    <input type="text" name="title" placeholder="What needs to be done?" maxlength="{{ title_max_length }}" required autofocus>
+    <button type="submit">Add</button>
+  </form>
+
+  <div class="toolbar">
+    <span>{{ remaining }} task{{ '' if remaining == 1 else 's' }} left</span>
+    <div class="filters">
+      <a href="{{ url_for('main.index', filter='all') }}" class="{{ 'active' if current == 'all' }}">All</a>
+      <a href="{{ url_for('main.index', filter='active') }}" class="{{ 'active' if current == 'active' }}">Active</a>
+      <a href="{{ url_for('main.index', filter='done') }}" class="{{ 'active' if current == 'done' }}">Completed</a>
+    </div>
+  </div>
+
+  {% if todos %}
+    <ul class="todos">
+      {% for todo in todos %}
+        <li class="{{ 'done' if todo.done }}">
+          <form action="{{ url_for('main.toggle', todo_id=todo.id, filter=current) }}" method="post">
+            <button type="submit" class="check" title="{{ 'Mark as not done' if todo.done else 'Mark as done' }}">{{ '✓' if todo.done }}</button>
+          </form>
+          <span class="todo-title">{{ todo.title }}</span>
+          <a href="{{ url_for('main.edit', todo_id=todo.id) }}" class="btn-link">Edit</a>
+          <form action="{{ url_for('main.delete', todo_id=todo.id, filter=current) }}" method="post"
+                onsubmit="return confirm('Delete this task?')">
+            <button type="submit" class="btn-danger">Delete</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty">No tasks here 🎉</p>
+  {% endif %}
+
+  {% if completed %}
+    <form action="{{ url_for('main.clear_done', filter=current) }}" method="post" class="clear-form">
+      <button type="submit" class="btn-link">Clear completed ({{ completed }})</button>
+    </form>
+  {% endif %}
+{% endblock %}

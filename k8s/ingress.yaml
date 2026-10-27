@@ -1,0 +1,19 @@
+# Exposes the app at http://todo.localhost through an ingress controller
+# (e.g. ingress-nginx). Change the host for a real domain.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: flask-todo
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: todo.localhost
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: flask-todo
+                port:
+                  name: http

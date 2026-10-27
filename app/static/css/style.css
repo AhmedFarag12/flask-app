@@ -1,0 +1,43 @@
+* { box-sizing: border-box; }
+body { font-family: system-ui, "Segoe UI", Tahoma, sans-serif; margin: 0; background: #f6f7f9; color: #222; }
+nav { background: #1f2937; padding: 1rem; display: flex; gap: 1.25rem; align-items: center; }
+nav a { color: #e5e7eb; text-decoration: none; }
+nav a:hover { color: #fff; }
+nav .brand { font-weight: 700; color: #fff; margin-inline-end: auto; }
+main { max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
+h1 { margin-top: 0; }
+
+button { font: inherit; cursor: pointer; }
+
+.flash { padding: .75rem 1rem; border-radius: 8px; margin-bottom: 1rem; }
+.flash-success { background: #dcfce7; color: #166534; }
+.flash-error { background: #fee2e2; color: #991b1b; }
+
+.add-form { display: flex; gap: .5rem; margin-bottom: 1rem; }
+.add-form input { flex: 1; min-width: 0; padding: .7rem .9rem; border: 1px solid #d1d5db; border-radius: 8px; font: inherit; }
+.add-form input:focus { outline: 2px solid #2563eb; border-color: transparent; }
+.add-form button { padding: .7rem 1.2rem; background: #2563eb; color: #fff; border: 0; border-radius: 8px; }
+.add-form button:hover { background: #1d4ed8; }
+
+.toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+           gap: .5rem; margin-bottom: .75rem; color: #6b7280; font-size: .9rem; }
+.filters { display: flex; gap: .25rem; }
+.filters a { padding: .3rem .7rem; border-radius: 999px; color: #374151; text-decoration: none; }
+.filters a.active { background: #2563eb; color: #fff; }
+
+.todos { list-style: none; padding: 0; margin: 0; background: #fff; border-radius: 10px;
+         box-shadow: 0 1px 3px rgba(0, 0, 0, .08); }
+.todos li { display: flex; align-items: center; gap: .75rem; padding: .8rem 1rem; border-bottom: 1px solid #f0f0f0; }
+.todos li:last-child { border-bottom: 0; }
+.todos form { margin: 0; }
+.todo-title { flex: 1; word-break: break-word; }
+.todos li.done .todo-title { text-decoration: line-through; color: #9ca3af; }
+
+.check { width: 1.6rem; height: 1.6rem; border: 2px solid #9ca3af; border-radius: 50%;
+         background: #fff; color: #fff; padding: 0; line-height: 1; }
+.todos li.done .check { background: #16a34a; border-color: #16a34a; }
+
+.btn-link { background: none; border: 0; color: #2563eb; padding: 0; text-decoration: none; font-size: .9rem; }
+.btn-danger { background: none; border: 0; color: #dc2626; padding: 0; font-size: .9rem; }
+.empty { text-align: center; color: #6b7280; padding: 2rem 0; }
+.clear-form { margin-top: 1rem; text-align: center; }

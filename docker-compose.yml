@@ -1,0 +1,15 @@
+# Run the app locally in Docker:  docker compose up --build
+services:
+  web:
+    build: .
+    image: flask-todo:local
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - todo-data:/app/instance
+    restart: unless-stopped
+
+volumes:
+  todo-data:

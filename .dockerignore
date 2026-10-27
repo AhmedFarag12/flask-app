@@ -1,0 +1,19 @@
+# Keep the build context small and free of secrets.
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+.git/
+.github/
+.vscode/
+instance/
+tests/
+k8s/
+scripts/
+.env
+.env.*
+Dockerfile
+docker-compose.yml
+.dockerignore
