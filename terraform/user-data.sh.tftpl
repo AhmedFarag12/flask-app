@@ -1,0 +1,61 @@
+#!/bin/bash
+# Runs once, on the server's first boot.
+set -euxo pipefail
+
+dnf install -y docker
+systemctl enable --now docker
+
+# Generate the Flask SECRET_KEY on the server so it never leaves it.
+install -d -m 700 /etc/flask-todo
+if [ ! -f /etc/flask-todo/env ]; then
+  printf 'SECRET_KEY=%s\n' "$(openssl rand -hex 32)" > /etc/flask-todo/env
+  chmod 600 /etc/flask-todo/env
+fi
+
+# Pulls the image and restarts the container only when the image changed.
+cat > /usr/local/bin/flask-todo-update <<'SCRIPT'
+#!/bin/bash
+set -euo pipefail
+IMAGE="${image}"
+
+docker pull -q "$IMAGE" >/dev/null
+latest="$(docker image inspect -f '{{.Id}}' "$IMAGE")"
+running="$(docker inspect -f '{{.Image}}' flask-todo 2>/dev/null || true)"
+[ "$latest" = "$running" ] && exit 0
+
+docker rm -f flask-todo >/dev/null 2>&1 || true
+docker run -d --name flask-todo --restart unless-stopped \
+  -p 80:8000 \
+  --env-file /etc/flask-todo/env \
+  -v flask-todo-data:/app/instance \
+  "$IMAGE"
+docker image prune -f
+SCRIPT
+chmod 755 /usr/local/bin/flask-todo-update
+
+# Check for a new image every 2 minutes, so a push to main deploys itself.
+cat > /etc/systemd/system/flask-todo-update.service <<'UNIT'
+[Unit]
+Description=Update the flask-todo container
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/flask-todo-update
+UNIT
+
+cat > /etc/systemd/system/flask-todo-update.timer <<'UNIT'
+[Unit]
+Description=Check for a new flask-todo image
+
+[Timer]
+OnBootSec=10s
+OnUnitActiveSec=2min
+
+[Install]
+WantedBy=timers.target
+UNIT
+
+systemctl daemon-reload
+systemctl enable --now flask-todo-update.timer
